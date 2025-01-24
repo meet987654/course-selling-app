@@ -1,15 +1,35 @@
-const express=require('express');
-    const bodyParser = require('body-parser');
-    const app=express();
-    const adminRouter=require("./routes/admin");
-    const userRouter =require("./routes/user")
+const mongoose=require('mongoose');
 
-    app.use(bodyParser.json());
-    app.use("/admin",adminRouter)
-    app.use("/user",userRouter)
+mongoose.connect('mongodb+srv://admin:tGJ6lHf0EA0B9aQj@cluster0.pr6f0.mongodb.net/course_selling_app')
 
-    const PORT=3000;
+const AdminSchema= new mongoose.Schema({
+   username:String,
+   password:String
+})
 
-    app.listen(PORT,()=>{
-        console.log('server running on port 3000')
-    })
+const UserSchema= new mongoose.Schema({
+   username:String,
+   password:String,
+   purchasedCourses:[{
+         type:mongoose.Schema.Types.ObjectId,
+         ref:'Course'
+   }]
+})
+
+const CourseSchema= new mongoose.Schema({
+    title:String,
+    description:String,
+    imageLink:String,
+    price:Number
+})
+
+const Admin = mongoose.model('Admin',AdminSchema);
+const User = mongoose.model('User',UserSchema);
+const Course = mongoose.model('Course',CourseSchema);
+
+
+module.exports={
+    Admin,
+    Course,
+    User
+}
